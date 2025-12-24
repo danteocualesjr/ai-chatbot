@@ -9,20 +9,47 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: none;
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(99, 102, 241, 0.2);
   border-radius: 50%;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: rgba(99, 102, 241, 0.05);
+  color: var(--brand-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.file-upload-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.file-upload-button:hover:not(:disabled)::before {
+  width: 100px;
+  height: 100px;
 }
 
 .file-upload-button:hover:not(:disabled) {
-  background: #e5e7eb;
-  color: #111827;
+  background: rgba(99, 102, 241, 0.1);
+  border-color: var(--brand-color);
+  color: var(--brand-color-dark);
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.file-upload-button:active:not(:disabled) {
+  transform: scale(0.95) rotate(0deg);
 }
 
 .file-upload-button:disabled {
