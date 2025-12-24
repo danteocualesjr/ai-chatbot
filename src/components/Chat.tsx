@@ -10,13 +10,22 @@ interface MessageState {
   content: string;
 }
 
+const hasApiKey = () => {
+  return !!import.meta.env.VITE_OPENAI_API_KEY && import.meta.env.VITE_OPENAI_API_KEY !== 'your_api_key_here';
+};
+
 export const Chat = () => {
-  const [messages, setMessages] = useState<MessageState[]>([
-    {
-      role: 'assistant',
-      content: 'Hey! How can I help you today?',
-    },
-  ]);
+  const initialMessage: MessageState = hasApiKey()
+    ? {
+        role: 'assistant',
+        content: 'Hey! How can I help you today?',
+      }
+    : {
+        role: 'assistant',
+        content: '⚠️ **Setup Required**\n\nTo use this chatbot, please configure your OpenAI API key:\n\n1. Create a `.env` file in the project root\n2. Add: `VITE_OPENAI_API_KEY=your_actual_api_key`\n3. Restart the development server\n\nGet your API key from [OpenAI Platform](https://platform.openai.com/api-keys)',
+      };
+
+  const [messages, setMessages] = useState<MessageState[]>([initialMessage]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -29,6 +38,15 @@ export const Chat = () => {
   }, [messages]);
 
   const handleSend = async (userMessage: string) => {
+    if (!hasApiKey()) {
+      const errorMessage: MessageState = {
+        role: 'assistant',
+        content: '⚠️ **API Key Not Configured**\n\nPlease set `VITE_OPENAI_API_KEY` in your `.env` file and restart the development server.\n\nGet your API key from [OpenAI Platform](https://platform.openai.com/api-keys)',
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      return;
+    }
+
     // Add user message immediately
     const newUserMessage: MessageState = {
       role: 'user',
