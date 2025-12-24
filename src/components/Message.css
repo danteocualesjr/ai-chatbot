@@ -25,9 +25,9 @@
 
 .message-content {
   max-width: 75%;
-  padding: 14px 18px;
-  border-radius: 20px;
-  font-size: 15px;
+  padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 4);
+  border-radius: var(--border-radius);
+  font-size: 16px;
   line-height: 1.6;
   word-wrap: break-word;
   position: relative;
@@ -41,19 +41,19 @@
 .message-user .message-content {
   background: var(--brand-color);
   color: #ffffff;
-  border-bottom-right-radius: 6px;
-  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.2);
+  border-bottom-right-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(255, 76, 0, 0.2);
 }
 
 .message-user .message-content:hover {
   background: var(--brand-color-dark);
-  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 4px 12px rgba(255, 76, 0, 0.25);
 }
 
 .message-assistant .message-content {
   background: var(--bg-primary);
   color: var(--text-primary);
-  border-bottom-left-radius: 6px;
+  border-bottom-left-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
 }
@@ -134,7 +134,7 @@
 }
 
 .message-assistant .message-content a {
-  color: var(--brand-color);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -152,8 +152,8 @@
 
 /* Image display in messages */
 .message-image-container {
-  margin-bottom: 12px;
-  border-radius: 12px;
+  margin-bottom: calc(var(--spacing-unit) * 3);
+  border-radius: var(--border-radius);
   overflow: hidden;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);

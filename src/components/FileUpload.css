@@ -9,10 +9,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: calc(var(--spacing-unit) * 10);
+  height: calc(var(--spacing-unit) * 10);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   background: var(--bg-primary);
   color: var(--text-secondary);
   cursor: pointer;
