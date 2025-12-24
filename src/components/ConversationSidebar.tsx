@@ -16,6 +16,7 @@ export const ConversationSidebar = ({
   onClose,
 }: ConversationSidebarProps) => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     // Load conversations when sidebar opens
@@ -77,51 +78,72 @@ export const ConversationSidebar = ({
       {isOpen && <div className="sidebar-overlay" onClick={onClose} />}
       <div className={`conversation-sidebar ${!isOpen ? 'mobile-hidden' : ''}`}>
         <div className="sidebar-header">
-          <h3>Conversations</h3>
+          <div className="sidebar-header-left">
+            <button 
+              className="sidebar-collapse-toggle" 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              aria-label={isCollapsed ? "Expand conversations" : "Collapse conversations"}
+            >
+              <svg 
+                width="16" 
+                height="16" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2"
+                className={isCollapsed ? 'collapsed' : ''}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <h3>Conversations</h3>
+          </div>
           <button className="sidebar-close" onClick={onClose} aria-label="Close sidebar">
             ×
           </button>
         </div>
         <div className="sidebar-content">
-          {conversations.length === 0 ? (
-            <div className="sidebar-empty">
-              <p>No conversations yet</p>
-              <p className="sidebar-empty-hint">Start a new chat to see it here</p>
-            </div>
-          ) : (
-            <div className="conversation-list">
-              {conversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  className={`conversation-item ${
-                    currentConversationId === conversation.id ? 'active' : ''
-                  }`}
-                  onClick={() => onSelectConversation(conversation.id)}
-                >
-                  <div className="conversation-item-content">
-                    <div className="conversation-title">{conversation.title}</div>
-                    <div className="conversation-preview">{getPreview(conversation.messages)}</div>
-                    <div className="conversation-meta">
-                      <span className="conversation-date">{formatDate(conversation.updatedAt)}</span>
-                      <span className="conversation-count">
-                        {conversation.messages.filter(m => m.role === 'user').length} messages
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    className="conversation-delete"
-                    onClick={(e) => handleDelete(e, conversation.id)}
-                    aria-label="Delete conversation"
+          <div className={`sidebar-content-inner ${isCollapsed ? 'collapsed' : ''}`}>
+            {conversations.length === 0 ? (
+              <div className="sidebar-empty">
+                <p>No conversations yet</p>
+                <p className="sidebar-empty-hint">Start a new chat to see it here</p>
+              </div>
+            ) : (
+              <div className="conversation-list">
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    className={`conversation-item ${
+                      currentConversationId === conversation.id ? 'active' : ''
+                    }`}
+                    onClick={() => onSelectConversation(conversation.id)}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                    <div className="conversation-item-content">
+                      <div className="conversation-title">{conversation.title}</div>
+                      <div className="conversation-preview">{getPreview(conversation.messages)}</div>
+                      <div className="conversation-meta">
+                        <span className="conversation-date">{formatDate(conversation.updatedAt)}</span>
+                        <span className="conversation-count">
+                          {conversation.messages.filter(m => m.role === 'user').length} messages
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      className="conversation-delete"
+                      onClick={(e) => handleDelete(e, conversation.id)}
+                      aria-label="Delete conversation"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
