@@ -1,74 +1,115 @@
-# React + TypeScript + Vite
+# AI Customer Support Chatbot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, Intercom-style customer support chatbot built with React, TypeScript, and OpenAI's GPT API.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎨 Clean, modern chat interface inspired by Intercom
+- 💬 Real-time AI-powered conversations
+- 📝 Markdown rendering for AI responses
+- 📱 Fully responsive design
+- ⚡ Fast and smooth user experience
+- 🎯 Friendly, helpful AI support agent
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v18 or higher)
+- npm or yarn
+- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Installation
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1. Clone the repository and install dependencies:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Create a `.env` file in the root directory:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+VITE_OPENAI_API_KEY=your_api_key_here
 ```
-# ai-chatbot
+
+Replace `your_api_key_here` with your actual OpenAI API key.
+
+### Running the Development Server
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:5173` (or the port shown in your terminal).
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist` directory.
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── Chat.tsx          # Main chat container component
+│   ├── ChatHeader.tsx    # Header with title and close button
+│   ├── ChatInput.tsx     # Input field with send button
+│   ├── Message.tsx       # Individual message component
+│   └── *.css            # Component-specific styles
+├── services/
+│   └── chatService.ts    # OpenAI API integration
+├── App.tsx               # Root component
+└── main.tsx              # Entry point
+```
+
+## Customization
+
+### Changing the Brand Color
+
+The default brand color for user messages is `#007bff` (blue). To change it:
+
+1. Update the `--brand-color` CSS variable in `src/index.css`
+2. Update the background color in `src/components/Message.css` for `.message-user .message-content`
+
+### Modifying the AI Personality
+
+Edit the system prompt in `src/services/chatService.ts` to change the AI's personality and behavior.
+
+### Changing the Greeting Message
+
+Update the initial message in `src/components/Chat.tsx`:
+
+```typescript
+const [messages, setMessages] = useState<MessageState[]>([
+  {
+    role: 'assistant',
+    content: 'Your custom greeting here!',
+  },
+]);
+```
+
+## Important Security Note
+
+⚠️ **This implementation uses the OpenAI API directly from the browser**, which exposes your API key in the client-side code. For production use, you should:
+
+1. Create a backend API proxy to handle OpenAI requests
+2. Store your API key securely on the server
+3. Implement rate limiting and authentication
+
+## Technologies Used
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **OpenAI SDK** - AI integration
+- **react-markdown** - Markdown rendering
+- **CSS Modules** - Component-scoped styling
+
+## License
+
+MIT
