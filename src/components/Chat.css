@@ -14,6 +14,12 @@
   position: relative;
 }
 
+@media (min-width: 769px) {
+  .chat-container {
+    max-height: 95vh;
+  }
+}
+
 .chat-messages {
   flex: 1;
   overflow-y: auto;
