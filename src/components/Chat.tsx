@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ChatHeader } from './ChatHeader';
 import { ChatInput } from './ChatInput';
 import { Message } from './Message';
-import { sendMessage, Message as ChatMessage } from '../services/chatService';
+import { sendMessage, type Message as ChatMessage } from '../services/chatService';
 import './Chat.css';
 
 interface MessageState {

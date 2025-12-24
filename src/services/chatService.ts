@@ -1,9 +1,13 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-  dangerouslyAllowBrowser: true, // Note: In production, use a backend proxy
-});
+const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+
+const openai = apiKey
+  ? new OpenAI({
+      apiKey,
+      dangerouslyAllowBrowser: true, // Note: In production, use a backend proxy
+    })
+  : null;
 
 export interface Message {
   role: 'user' | 'assistant' | 'system';
@@ -13,6 +17,10 @@ export interface Message {
 export const sendMessage = async (
   messages: Message[]
 ): Promise<string> => {
+  if (!openai) {
+    throw new Error('OpenAI API key is not configured. Please set VITE_OPENAI_API_KEY in your .env file.');
+  }
+
   try {
     const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
