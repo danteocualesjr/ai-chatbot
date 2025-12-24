@@ -15,6 +15,7 @@ import './Chat.css';
 interface MessageState {
   role: 'user' | 'assistant';
   content: string;
+  imageUrl?: string;
 }
 
 interface ChatProps {
@@ -49,6 +50,7 @@ export const Chat = ({
   const [conversationId, setConversationId] = useState<string | null>(propConversationId || null);
   const [messages, setMessages] = useState<MessageState[]>([getInitialMessage()]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -128,7 +130,7 @@ export const Chat = ({
     onConversationChange?.(null);
   };
 
-  const handleSend = async (userMessage: string) => {
+  const handleSend = async (userMessage: string, imageData?: string) => {
     if (!hasApiKey()) {
       const errorMessage: MessageState = {
         role: 'assistant',
@@ -149,9 +151,11 @@ export const Chat = ({
     const newUserMessage: MessageState = {
       role: 'user',
       content: userMessage,
+      imageUrl: imageData,
     };
     setMessages((prev) => [...prev, newUserMessage]);
     setIsLoading(true);
+    setIsAnalyzingImage(!!imageData);
 
     try {
       // Convert messages to API format (exclude initial greeting)
@@ -178,8 +182,8 @@ export const Chat = ({
         content: userMessage,
       });
 
-      // Get AI response
-      const aiResponse = await sendMessage(apiMessages);
+      // Get AI response (pass imageData if available)
+      const aiResponse = await sendMessage(apiMessages, imageData);
 
       // Add AI response
       const newAiMessage: MessageState = {
@@ -195,6 +199,7 @@ export const Chat = ({
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
+      setIsAnalyzingImage(false);
     }
   };
 
@@ -207,15 +212,25 @@ export const Chat = ({
       />
       <div className="chat-messages">
         {messages.map((message, index) => (
-          <Message key={index} content={message.content} role={message.role} />
+          <Message 
+            key={index} 
+            content={message.content} 
+            role={message.role} 
+            imageUrl={message.imageUrl}
+          />
         ))}
         {isLoading && (
           <div className="message message-assistant">
             <div className="message-content">
-              <div className="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
+              <div className="loading-indicator">
+                <div className="loading-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span className="loading-text">
+                  {isAnalyzingImage ? '🔍 Analyzing image...' : 'Thinking...'}
+                </span>
               </div>
             </div>
           </div>

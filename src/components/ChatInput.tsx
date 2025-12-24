@@ -1,8 +1,9 @@
 import { useState, type KeyboardEvent } from 'react';
+import { FileUpload } from './FileUpload';
 import './ChatInput.css';
 
 interface ChatInputProps {
-  onSend: (message: string) => void;
+  onSend: (message: string, imageData?: string) => void;
   disabled?: boolean;
   placeholder?: string;
 }
@@ -13,11 +14,13 @@ export const ChatInput = ({
   placeholder = 'Type your question here...' 
 }: ChatInputProps) => {
   const [input, setInput] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleSend = () => {
-    if (input.trim() && !disabled) {
-      onSend(input.trim());
+    if ((input.trim() || selectedImage) && !disabled) {
+      onSend(input.trim() || 'What\'s in this image?', selectedImage || undefined);
       setInput('');
+      setSelectedImage(null);
     }
   };
 
@@ -28,8 +31,30 @@ export const ChatInput = ({
     }
   };
 
+  const handleFileSelect = (_file: File, preview: string) => {
+    setSelectedImage(preview);
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+  };
+
   return (
     <div className="chat-input-container">
+      {selectedImage && (
+        <div className="chat-input-image-preview">
+          <img src={selectedImage} alt="Preview" />
+          <button
+            type="button"
+            className="chat-input-image-remove"
+            onClick={handleRemoveImage}
+            aria-label="Remove image"
+          >
+            ×
+          </button>
+        </div>
+      )}
+      <FileUpload onFileSelect={handleFileSelect} disabled={disabled} />
       <input
         type="text"
         className="chat-input"
@@ -42,7 +67,7 @@ export const ChatInput = ({
       <button
         className="chat-send-button"
         onClick={handleSend}
-        disabled={disabled || !input.trim()}
+        disabled={disabled || (!input.trim() && !selectedImage)}
         aria-label="Send message"
       >
         <svg
